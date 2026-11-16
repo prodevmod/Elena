@@ -1,4 +1,14 @@
-@import url('https://googleapis.com');
+@import url('https://fonts.googleapis.com/css2?family=Bad+Script&family=DM+Sans:wght@500;600;700&display=swap');
+
+:root {
+  --aqua: #64f7fe;
+  --aqua-deep: #1ed5df;
+  --ink: #6f0804;
+  --berry: #9b0801;
+  --cream: #fffdf8;
+  --blush: #d9fbfc;
+}
+
 #root {
   width: 100%;
   max-width: 100vw;
@@ -25,10 +35,25 @@ body {
   width: 100%;
   max-width: 100vw;
   min-height: 100vh;
-  background-color: #64f7fe;
+  background:
+    radial-gradient(circle at 50% -8%, rgba(255, 255, 255, 0.78), transparent 36%),
+    linear-gradient(135deg, #64f7fe 0%, #b5fbfd 48%, #64f7fe 100%);
   overflow-x: hidden;
+  scrollbar-width: none;
   font-family: 'Bad Script', cursive;
-  color: #9b0801;
+  color: var(--ink);
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+*::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+* {
+  scrollbar-width: none;
 }
 
 .hearts-layer {
@@ -37,22 +62,50 @@ body {
   pointer-events: none;
   overflow: hidden;
   z-index: 0;
+  opacity: 0.24;
 }
 
 .heart-img {
   position: absolute;
   object-fit: contain;
+  animation: heartDrift 7s ease-in-out infinite;
+  filter: drop-shadow(0 8px 10px rgba(155, 8, 1, 0.12));
+}
+
+.photo-stickers {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.photo-sticker {
+  position: absolute;
+  width: clamp(42px, 7vw, 72px);
+  height: clamp(52px, 9vw, 88px);
+  padding: 4px;
+  object-fit: cover;
+  border: 3px solid #fffdf8;
+  border-radius: 6px;
+  background: #fffdf8;
+  box-shadow: 0 6px 14px rgba(75, 96, 97, 0.2);
+  opacity: 0.88;
+  animation: stickerSway 6s ease-in-out infinite;
+}
+
+.photo-sticker:nth-child(even) {
+  animation-delay: -2.5s;
 }
 
 .main-content {
   position: relative;
   z-index: 1;
   width: 100%;
-  max-width: 100vw;
+  max-width: 680px;
+  margin: 0 auto;
   min-height: 100vh;
   box-sizing: border-box;
   overflow-x: hidden;
-  padding: 28px 36px;
+  padding: max(32px, env(safe-area-inset-top)) 20px max(48px, env(safe-area-inset-bottom));
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -60,46 +113,73 @@ body {
 }
 
 .title {
-  font-size: clamp(1.8rem, 7vw, 2.8rem);
+  color: var(--ink);
+  font-size: clamp(2.2rem, 7vw, 3.6rem);
   font-weight: 400;
-  margin: 0 0 10px 0;
+  margin: 0 0 4px 0;
   line-height: 1.3;
-  text-shadow: 0 2px 6px rgba(255, 255, 255, 0.5);
+  text-shadow: 0 3px 14px rgba(255, 255, 255, 0.7);
+  animation: titleGlow 4s ease-in-out infinite;
 }
 
 .counter-wrapper {
+  position: relative;
   display: inline-flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 7px;
+  padding: 14px 22px 12px;
+  border: 1px solid rgba(155, 8, 1, 0.18);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.52);
+  box-shadow: 0 12px 30px rgba(42, 142, 149, 0.18);
+  backdrop-filter: blur(8px);
 }
 
 .timer-text {
-  font-size: clamp(2.4rem, 9vw, 3.6rem);
+  color: var(--berry);
+  font-family: 'DM Sans', sans-serif;
+  font-size: clamp(2rem, 9vw, 3.2rem);
   font-weight: 400;
   font-variant-numeric: tabular-nums;
-  letter-spacing: 3px;
+  letter-spacing: 2px;
   line-height: 1.1;
-  text-shadow: 0 2px 6px rgba(255, 255, 255, 0.5);
+  text-shadow: 0 2px 8px rgba(155, 8, 1, 0.12);
+  animation: timerPulse 3.5s ease-in-out infinite;
 }
 
 .timer-labels {
   display: flex;
   justify-content: space-between;
   width: 100%;
-  font-size: clamp(0.95rem, 3.5vw, 1.2rem);
+  color: rgba(90, 22, 36, 0.68);
+  font-family: 'DM Sans', sans-serif;
+  font-size: clamp(0.65rem, 2.5vw, 0.78rem);
   font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 /* Interactive Card Stage */
 .card-stage {
-  margin-top: 28px;
+  position: relative;
+  margin-top: 34px;
+  padding: 30px clamp(16px, 5vw, 34px) 26px;
   width: 100%;
-  min-width: 0;
+  box-sizing: border-box;
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  border: 1px solid rgba(155, 8, 1, 0.16);
+  border-radius: 32px;
+  background: rgba(255, 253, 248, 0.72);
+  box-shadow:
+    0 22px 55px rgba(42, 142, 149, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
   transition: opacity 0.6s ease;
+  animation: stageRise 0.8s ease both;
 }
 
 .card-stage.fading-out {
@@ -107,29 +187,147 @@ body {
 }
 
 .card-button {
-  background: none;
-  border: none;
-  padding: 0;
-  width: 100%;
-  min-width: 0;
+  position: relative;
+  width: calc(50% - 10px);
+  min-height: 132px;
+  box-sizing: border-box;
+  border: 1px solid rgba(155, 8, 1, 0.1);
+  border-radius: 22px;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.66);
   display: flex;
   justify-content: center;
+  align-items: center;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  transition: transform 0.25s ease;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+  box-shadow: 0 8px 18px rgba(42, 142, 149, 0.12);
+}
+
+.card-stage .card-button:nth-child(1) {
+  animation: cardFloat 5s ease-in-out 0.2s infinite;
+}
+
+.card-stage .card-button:nth-child(2) {
+  animation: cardFloat 5s ease-in-out 0.8s infinite;
+}
+
+.card-stage .card-button:nth-child(3) {
+  animation: cardFloat 5s ease-in-out 1.4s infinite;
+}
+
+.card-stage .card-button:nth-child(4) {
+  animation: cardFloat 5s ease-in-out 2s infinite;
+}
+
+.card-button:hover,
+.card-button:focus-visible {
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 14px 28px rgba(42, 142, 149, 0.22);
+  outline: none;
+  transform: translateY(-4px);
 }
 
 .card-button:active {
-  transform: scale(0.96);
+  transform: translateY(-1px) scale(0.98);
+}
+
+.plans-area {
+  width: min(100%, 410px);
+  margin-top: 16px;
+  padding: 14px 16px 16px;
+  box-sizing: border-box;
+  border: 1px solid rgba(155, 8, 1, 0.14);
+  border-radius: 20px;
+  background: rgba(255, 253, 248, 0.65);
+  box-shadow: 0 10px 24px rgba(42, 142, 149, 0.12);
+  animation: stageRise 0.8s ease 0.25s both;
+}
+
+.plans-heading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  color: var(--berry);
+  font-size: 1.22rem;
+}
+
+.plans-icon {
+  font-size: 1.4rem;
+}
+
+.plans-list {
+  display: grid;
+  gap: 7px;
+  margin: 12px 0;
+}
+
+.plan-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 7px 8px;
+  color: rgba(111, 8, 4, 0.84);
+  font-size: 1.02rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.plan-item input {
+  width: 17px;
+  height: 17px;
+  accent-color: var(--berry);
+  flex: 0 0 auto;
+}
+
+.plan-item.completed span {
+  opacity: 0.55;
+  text-decoration: line-through;
+}
+
+.plan-form {
+  display: flex;
+  gap: 7px;
+}
+
+.plan-form input {
+  min-width: 0;
+  flex: 1;
+  border: 1px solid rgba(155, 8, 1, 0.18);
+  border-radius: 999px;
+  padding: 8px 12px;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.76);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.78rem;
+}
+
+.plan-form input:focus {
+  border-color: var(--berry);
+  outline: 2px solid rgba(155, 8, 1, 0.12);
+}
+
+.plan-form button {
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 50%;
+  color: #fff;
+  background: var(--berry);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
 }
 
 .card-image {
-  width: 180px;
-  max-width: 75%;
+  width: 210px;
+  max-width: 88%;
   height: auto;
   display: block;
   object-fit: contain;
-  filter: drop-shadow(0 10px 18px rgba(155, 8, 1, 0.25));
+  filter: drop-shadow(0 12px 18px rgba(155, 8, 1, 0.25));
 }
 
 .tap-hint {
@@ -139,12 +337,12 @@ body {
 }
 
 .logo-button {
-  margin-top: 24px;
+  margin-top: 0;
 }
 
 .logo-card-image {
-  width: 160px;
-  max-width: 70%;
+  width: 150px;
+  max-width: 90%;
   height: auto;
   display: block;
   object-fit: contain;
@@ -265,7 +463,7 @@ body {
 }
 /* Audio Button on Main Screen */
 .audio-button {
-  margin-top: 20px;
+  margin-top: 0;
 }
 
 .audio-card-image {
@@ -361,7 +559,7 @@ body {
 }
 /* Camera Button on Main Screen */
 .camera-button {
-  margin-top: 20px;
+  margin-top: 0;
 }
 
 .camera-card-image {
@@ -371,6 +569,36 @@ body {
   display: block;
   object-fit: contain;
   filter: drop-shadow(0 8px 14px rgba(155, 8, 1, 0.22));
+}
+
+@media (min-width: 600px) {
+  .card-stage .card-button:first-child {
+    width: 100%;
+    min-height: 180px;
+  }
+}
+
+@media (max-width: 420px) {
+  .main-content {
+    padding-inline: 14px;
+  }
+
+  .card-stage {
+    margin-top: 30px;
+    gap: 12px;
+    padding-inline: 10px;
+  }
+
+  .card-button {
+    width: calc(50% - 6px);
+    min-height: 116px;
+    padding: 10px;
+  }
+
+  .card-stage .card-button:first-child {
+    width: 100%;
+    min-height: 154px;
+  }
 }
 
 /* Camera Roll 2-Column Photo Grid */
@@ -398,17 +626,36 @@ body {
   display: block;
 }
 
+.missing-photo-placeholder {
+  display: block;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  background:
+    radial-gradient(circle at 50% 45%, rgba(255, 255, 255, 0.22) 0 3px, transparent 4px),
+    #64f7fe;
+  border: 1px dashed rgba(155, 8, 1, 0.34);
+}
+
+.missing-photo {
+  position: relative;
+}
+
 /* Full-Screen Photo Zoom Overlay */
 .photo-lightbox {
   position: fixed;
   inset: 0;
-  z-index: 50;
-  background-color: rgba(0, 0, 0, 0.85);
+  z-index: 1000;
+  width: 100vw;
+  height: 100dvh;
+  box-sizing: border-box;
+  background-color: rgba(25, 8, 10, 0.92);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 20px;
   cursor: zoom-out;
+  overscroll-behavior: contain;
 }
 
 .lightbox-img {
@@ -419,12 +666,84 @@ body {
   object-fit: contain;
 }
 
+@keyframes heartDrift {
+  0%,
+  100% {
+    margin-top: 0;
+  }
+  50% {
+    margin-top: -10px;
+  }
+}
+
+@keyframes stickerSway {
+  0%,
+  100% {
+    margin-top: 0;
+  }
+  50% {
+    margin-top: -6px;
+  }
+}
+
+
+@keyframes titleGlow {
+  0%,
+  100% {
+    text-shadow: 0 3px 14px rgba(255, 255, 255, 0.7);
+  }
+  50% {
+    text-shadow: 0 3px 22px rgba(255, 255, 255, 0.98);
+  }
+}
+
+@keyframes timerPulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.025);
+  }
+}
+
+@keyframes stageRise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes cardFloat {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-5px) rotate(0.35deg);
+  }
+}
+
 @keyframes wavePulse {
   from {
     transform: scaleY(0.75);
   }
   to {
     transform: scaleY(1.1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
 

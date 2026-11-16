@@ -18,6 +18,18 @@ const RIGHT_HEARTS = [
   { top: '88%', right: '-8px', size: 'clamp(72px, 18vw, 105px)', rotate: -18 },
 ];
 
+const PHOTO_STICKERS = [
+  { src: '/E2.jpg', top: '18%', left: '7%', rotate: -12 },
+  { src: '/E3.jpg', top: '30%', right: '7%', rotate: 10 },
+  { src: '/E4.jpg', top: '66%', left: '6%', rotate: 8 },
+  { src: '/E5.jpg', top: '78%', right: '6%', rotate: -9 },
+  { src: '/E6.jpg', top: '48%', right: '3%', rotate: 14 },
+];
+
+const DEFAULT_PLANS = [
+  { id: 1, text: 'Να δούμε μαζί μια ταινία', done: false },
+];
+
 // September 17, 2026 at 04:30 (Month is 0-indexed: 8 = September)
 const START_DATE = new Date(2026, 8, 17, 4, 30, 0);
 
@@ -40,6 +52,38 @@ function getElapsedTime() {
 export default function App() {
   const [elapsed, setElapsed] = useState(getElapsedTime);
   const [stage, setStage] = useState('closed');
+  const [plans, setPlans] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem('love-plans')) || DEFAULT_PLANS;
+    } catch {
+      return DEFAULT_PLANS;
+    }
+  });
+  const [newPlan, setNewPlan] = useState('');
+
+  useEffect(() => {
+    localStorage.setItem('love-plans', JSON.stringify(plans));
+  }, [plans]);
+
+  const addPlan = (event) => {
+    event.preventDefault();
+    const text = newPlan.trim();
+    if (!text) return;
+
+    setPlans((currentPlans) => [
+      ...currentPlans,
+      { id: Date.now(), text, done: false },
+    ]);
+    setNewPlan('');
+  };
+
+  const togglePlan = (id) => {
+    setPlans((currentPlans) =>
+      currentPlans.map((plan) =>
+        plan.id === id ? { ...plan, done: !plan.done } : plan,
+      ),
+    );
+  };
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -70,6 +114,23 @@ export default function App() {
       return () => clearTimeout(timer);
     }
   }, [stage]);
+    useEffect(() => {
+    const handleVisibility = () => {
+      if (!document.hidden) {
+        setElapsed(getElapsedTime());
+        setStage((prev) => {
+          if (prev === 'opening-love' || prev === 'fading-love') return 'letter-love';
+          if (prev === 'fading-ten') return 'letter-ten';
+          if (prev === 'fading-audio') return 'letter-audio';
+          if (prev === 'fading-camera') return 'letter-camera';
+          return prev;
+        });
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibility);
+    return () => document.removeEventListener('visibilitychange', handleVisibility);
+  }, []);
 
   const isMenuVisible =
     stage === 'closed' ||
@@ -119,6 +180,24 @@ export default function App() {
             }}
           />
         ))}
+
+        <div className="photo-stickers" aria-hidden="true">
+          {PHOTO_STICKERS.map((sticker, index) => (
+            <img
+              key={`sticker-${index}`}
+              src={sticker.src}
+              alt=""
+              className="photo-sticker"
+              loading="lazy"
+              style={{
+                top: sticker.top,
+                left: sticker.left,
+                right: sticker.right,
+                transform: `rotate(${sticker.rotate}deg)`,
+              }}
+            />
+          ))}
+        </div>
       </div>
 
       <main className="main-content">
@@ -129,9 +208,9 @@ export default function App() {
             {elapsed.days}:{elapsed.hours}:{elapsed.minutes}
           </div>
           <div className="timer-labels">
-            <span>Μέρες</span>
-            <span>Ώρες</span>
-            <span>Λεπτά</span>
+            <span>Μερες</span>
+            <span>Ωρες</span>
+            <span>Λεπτα</span>
           </div>
         </div>
 
@@ -140,7 +219,7 @@ export default function App() {
             <button
               type="button"
               className="card-button"
-              
+
               onClick={() => stage === 'closed' && setStage('opening-love')}
               aria-label="Άνοιξε το γράμμα αγάπης"
             >
@@ -194,6 +273,38 @@ export default function App() {
                 className="camera-card-image"
               />
             </button>
+          </div>
+        )}
+
+        {stage === 'closed' && (
+          <div className="plans-area">
+            <div className="plans-heading">
+              <span className="plans-icon">♡</span>
+              <span>Να κάνουμε μαζί</span>
+            </div>
+            <div className="plans-list">
+              {plans.map((plan) => (
+                <label key={plan.id} className={`plan-item ${plan.done ? 'completed' : ''}`}>
+                  <input
+                    type="checkbox"
+                    checked={plan.done}
+                    onChange={() => togglePlan(plan.id)}
+                  />
+                  <span>{plan.text}</span>
+                </label>
+              ))}
+            </div>
+            <form className="plan-form" onSubmit={addPlan}>
+              <input
+                type="text"
+                value={newPlan}
+                onChange={(event) => setNewPlan(event.target.value)}
+                placeholder="Πρόσθεσε μια ιδέα..."
+                aria-label="Πρόσθεσε κάτι που θέλουμε να κάνουμε μαζί"
+                maxLength={80}
+              />
+              <button type="submit" aria-label="Πρόσθεσε ιδέα">+</button>
+            </form>
           </div>
         )}
 

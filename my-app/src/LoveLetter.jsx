@@ -75,6 +75,12 @@ export default function LoveLetter({ onClose }) {
           </p>
         </div>
       </div>
+
+      {onClose && (
+        <button type="button" className="close-letter-btn" onClick={onClose}>
+          Πίσω
+        </button>
+      )}
     </section>
   );
 }
